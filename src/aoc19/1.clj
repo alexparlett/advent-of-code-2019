@@ -10,36 +10,26 @@
 (defn get-modules
   []
   (map
-    (fn [module] (Integer/parseInt module))                 ; map each line to an integer
+    #(Integer/parseInt %)                                   ; map each line to an integer
     (string/split-lines (slurp data-file)))                 ; load file and split the lines
   )
 
-(defn calculate-fuel-required-for-weight
-  [weight]
-  (Math/max (- (Math/floor (/ weight 3)) 2) 0.0)            ; divide by 3, round down, minus 2 and max or 0
-  )
+(defn fuel
+  [mass]
+  (- (quot mass 3) 2))                                    ; divide by 3, round down, minus 2 and max or 0
 
-(defn calculate-fuel-required-for-module
-  [weight fuel]
-  (if (zero? weight)                                        ; is our current weight check greater than 0
-    fuel                                                    ; if so return the currently fuel
-    (recur                                                  ; else do this recursively
-      (calculate-fuel-required-for-weight weight)           ; calculate the weight of the required fuel
-      (+ fuel (calculate-fuel-required-for-weight weight))  ; add the current fuel and the new fuel
-      )
-    )
-  )
 
-(defn calculate-modules-fuel
-  []
-  (->> (get-modules)                                        ; get all modules
-       (map #(calculate-fuel-required-for-module % 0))      ; map them to calculated fuel requirements
-       (reduce +)                                           ; sum them all together
-       (println)                                            ; print for answer
-       )
-  )
+(defn total-fuel
+  [mass]
+  (reduce + (take-while pos? (rest (iterate fuel mass)))))
+
+(def part1
+  (reduce + (map fuel (get-modules))))
+
+(def part2
+  (reduce + (map total-fuel (get-modules))))
 
 (defn -main
   [& args]
-  (calculate-modules-fuel)
+  (println [part1, part2])
   )
