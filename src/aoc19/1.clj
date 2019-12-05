@@ -2,16 +2,15 @@
   (:gen-class)
   (:require [clojure.java.io :as io])
   (:require [clojure.string :as string])
-  (:require [aoc19.core :refer [load-file-as-string]])
-  )
+  (:require [aoc19.core :refer [load-file-as-string]]))
 
 (def data-file (load-file-as-string "1/modules.txt"))                         ; the url of the resource file
 
 (defn get-modules
   []
   (map
-    #(Integer/parseInt %)                                   ; map each line to an integer
-    (string/split-lines data-file))                         ; load file and split the lines
+   #(Integer/parseInt %)                                   ; map each line to an integer
+   (string/split-lines data-file))                         ; load file and split the lines
   )
 
 (defn fuel
@@ -31,5 +30,4 @@
 
 (defn -main
   [& args]
-  (println [part1, part2])
-  )
+  (println [part1, part2]))

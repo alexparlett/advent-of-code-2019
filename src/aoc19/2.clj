@@ -2,61 +2,45 @@
   (:gen-class)
   (:require [clojure.java.io :as io])
   (:require [clojure.string :as string])
-  (:require [aoc19.core :refer [load-file-as-string]])
-  )
+  (:require [aoc19.core :refer [load-file-as-string replace-value]]))
 
 (def data-file (load-file-as-string "2/opcodes.txt"))                         ; the url of the resource file
 
 (def core-program (vec (map #(Integer/parseInt %) (string/split data-file #","))))
 
-(defn replace-value
-  [index value arr]
-  (assoc arr index value)
-)
-
 (defn get-value
   [index arr]
-  (nth arr (nth arr index))
-)
+  (nth arr (nth arr index)))
 
 (defn code-add
   [program index]
-  (replace-value (nth program (+ 3 index)) (+ (get-value (+ 1 index) program) (get-value (+ 2 index) program)) program)
-)
+  (replace-value (nth program (+ 3 index)) (+ (get-value (+ 1 index) program) (get-value (+ 2 index) program)) program))
 
 (defn code-mul
   [program index]
-  (replace-value (nth program (+ 3 index)) (* (get-value (+ 1 index) program) (get-value (+ 2 index) program)) program)
-)
+  (replace-value (nth program (+ 3 index)) (* (get-value (+ 1 index) program) (get-value (+ 2 index) program)) program))
 
 (defn apply-code
   [program index]
   (case (nth program index)
     1 (code-add program index)
     2 (code-mul program index)
-    99 :done
-  )
-)
+    99 :done))
 
 (defn run-program
   [program pointer]
   (let [result (apply-code program pointer)]
-    (if (= result :done) 
+    (if (= result :done)
       program
-      (recur result (+ 4 pointer))
-    )
-  )
-)
+      (recur result (+ 4 pointer)))))
 
 (defn restore-program
   [program noun verb]
-  (replace-value 2 verb (replace-value 1 noun program))
-)
+  (replace-value 2 verb (replace-value 1 noun program)))
 
 (defn find-input-for-output
   [program output]
-  (for [i (range 99) j (range 99) :when (= output (first (run-program (restore-program program i j) 0)))] (+ (* 100 i) j) )
-)
+  (for [i (range 99) j (range 99) :when (= output (first (run-program (restore-program program i j) 0)))] (+ (* 100 i) j)))
 
 (def part1 (first (run-program (restore-program core-program 12 2) 0)))
 
@@ -64,5 +48,4 @@
 
 (defn -main
   [& args]
-    (println [part1 part2])
-  )
+  (println [part1 part2]))

@@ -8,8 +8,7 @@
 
 (deftype Segment [x1 y1 x2 y2 steps]
   Object
-  (toString [_] (str "start (" (pr-str x1) "," (pr-str y1) ") end (" (pr-str x2) "," (pr-str y2) ") steps " (pr-str steps)))
-)
+  (toString [_] (str "start (" (pr-str x1) "," (pr-str y1) ") end (" (pr-str x2) "," (pr-str y2) ") steps " (pr-str steps))))
 
 (def data-file (load-file-as-string "3/wires.txt"))
 
@@ -30,71 +29,52 @@
       "U" (conj previous (Segment. (.x2 before) (.y2 before) (+ (.x2 before) movement) (.y2 before) (+ (.steps before) movement)))
       "D" (conj previous (Segment. (.x2 before) (.y2 before) (- (.x2 before) movement) (.y2 before) (+ (.steps before) movement)))
       "R" (conj previous (Segment. (.x2 before) (.y2 before) (.x2 before) (+ (.y2 before) movement) (+ (.steps before) movement)))
-      "L" (conj previous (Segment. (.x2 before) (.y2 before) (.x2 before) (- (.y2 before) movement) (+ (.steps before) movement)))
-    )
-  )
-)
+      "L" (conj previous (Segment. (.x2 before) (.y2 before) (.x2 before) (- (.y2 before) movement) (+ (.steps before) movement))))))
 
 (defn plot-wire
   [wire]
-  (reduce #(plot-instruction %1 %2) [] wire)
-)
+  (reduce #(plot-instruction %1 %2) [] wire))
 
-(defn get-a 
-  [seg] 
-  (- (.y2 seg) (.y1 seg))
-)
+(defn get-a
+  [seg]
+  (- (.y2 seg) (.y1 seg)))
 
-(defn get-b 
-  [seg] 
-  (- (.x1 seg) (.x2 seg))
-)
+(defn get-b
+  [seg]
+  (- (.x1 seg) (.x2 seg)))
 
-(defn get-c 
-  [seg] 
-  (+ (* (get-a seg) (.x1 seg)) (* (get-b seg) (.y1 seg)))
-)
+(defn get-c
+  [seg]
+  (+ (* (get-a seg) (.x1 seg)) (* (get-b seg) (.y1 seg))))
 
 (defn get-determinate
   [left right]
-  (- (* (get-a left) (get-b right)) (* (get-a right) (get-b left)))
-)
+  (- (* (get-a left) (get-b right)) (* (get-a right) (get-b left))))
 
 (defn find-intersection-point
   [left right]
-  (let 
-    [
-      x (/ (- (* (get-b right) (get-c left)) (* (get-b left) (get-c right))) (get-determinate left right))
-      y (/ (- (* (get-a left) (get-c right)) (* (get-a right) (get-c left))) (get-determinate left right))
-    ]
-    {
-      :x x 
-      :y y
-      :steps (+ (- (.steps left) (Math/abs (- (.x2 left) x)) (Math/abs (- (.y2 left) y))) (- (.steps right) (Math/abs (- (.x2 right) x)) (Math/abs (- (.y2 right) y))))
-    }
-  )
-)
+  (let
+   [x (/ (- (* (get-b right) (get-c left)) (* (get-b left) (get-c right))) (get-determinate left right))
+    y (/ (- (* (get-a left) (get-c right)) (* (get-a right) (get-c left))) (get-determinate left right))]
+    {:x x
+     :y y
+     :steps (+ (- (.steps left) (Math/abs (- (.x2 left) x)) (Math/abs (- (.y2 left) y))) (- (.steps right) (Math/abs (- (.x2 right) x)) (Math/abs (- (.y2 right) y))))}))
 
 (defn find-intersection
   [left right]
-  (for [l left r right :when (and (and (not= (.x1 l) (.x1 r)) (not= (.y1 l) (.y1 r))) (Line2D/linesIntersect (.x1 l) (.y1 l) (.x2 l) (.y2 l) (.x1 r) (.y1 r) (.x2 r) (.y2 r)))] (find-intersection-point l r))
-)
+  (for [l left r right :when (and (and (not= (.x1 l) (.x1 r)) (not= (.y1 l) (.y1 r))) (Line2D/linesIntersect (.x1 l) (.y1 l) (.x2 l) (.y2 l) (.x1 r) (.y1 r) (.x2 r) (.y2 r)))] (find-intersection-point l r)))
 
 (defn map-distances
   [intersection]
-  (map #(+ (Math/abs (get % :x)) (Math/abs (get % :y))) intersection)
-)
+  (map #(+ (Math/abs (get % :x)) (Math/abs (get % :y))) intersection))
 
 (defn closest
   [distances]
-  (apply min distances)
-)
+  (apply min distances))
 
 (defn map-steps
   [intersection]
-  (map #(get % :steps) intersection)
-)
-
+  (map #(get % :steps) intersection))
 
 (def part1 (closest (map-distances (find-intersection (plot-wire wire-one) (plot-wire wire-two)))))
 
@@ -106,5 +86,4 @@
 
 (defn -main
   [& args]
-  (println [part1 part2])
-)
+  (println [part1 part2]))
