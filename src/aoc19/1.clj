@@ -4,7 +4,7 @@
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [load-file-as-string]]))
 
-(def data-file (load-file-as-string "1/modules.txt"))                         ; the url of the resource file
+(def data-file (load-file-as-string "day1.txt"))                         ; the url of the resource file
 
 (defn get-modules
   []

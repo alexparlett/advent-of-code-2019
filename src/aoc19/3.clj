@@ -10,7 +10,7 @@
   Object
   (toString [_] (str "start (" (pr-str x1) "," (pr-str y1) ") end (" (pr-str x2) "," (pr-str y2) ") steps " (pr-str steps))))
 
-(def data-file (load-file-as-string "3/wires.txt"))
+(def data-file (load-file-as-string "day3.txt"))
 
 (def wires
   (vec

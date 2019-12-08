@@ -4,7 +4,7 @@
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [load-file-as-string replace-value]]))
 
-(def data-file (load-file-as-string "2/opcodes.txt"))                         ; the url of the resource file
+(def data-file (load-file-as-string "day2.txt"))                         ; the url of the resource file
 
 (def core-program (vec (map #(Integer/parseInt %) (string/split data-file #","))))
 
