@@ -1,6 +1,5 @@
 (ns aoc19.1
   (:gen-class)
-  (:require [clojure.java.io :as io])
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [load-file-as-string]]))
 

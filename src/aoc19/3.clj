@@ -1,9 +1,7 @@
 (ns aoc19.3
   (:import [java.awt.geom Line2D])
   (:gen-class)
-  (:require [clojure.java.io :as io])
   (:require [clojure.string :as string])
-  (:require [clojure.data :as data])
   (:require [aoc19.core :refer [load-file-as-string]]))
 
 (deftype Segment [x1 y1 x2 y2 steps]
