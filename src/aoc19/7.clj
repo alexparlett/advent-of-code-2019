@@ -9,19 +9,17 @@
 
 (def core-program (vec (map #(Integer/parseInt %) (string/split data-file #","))))
 
-(def phase-permutations (combo/permutations [0 1 2 3 4]))
-
 (defn amp
   [program phase input]
   (get (run-program program 0 [phase input] nil) :output))
 
-(defn run-amplifiers
-  [program]
+(defn run
+  [program phase-permutations]
   (for [phases phase-permutations] (amp program (nth phases 4) (amp program (nth phases 3) (amp program (nth phases 2) (amp program (nth phases 1) (amp program (nth phases 0) 0)))))))
 
-(def part1 (println (apply max (run-amplifiers core-program))))
+(def part1 (println (apply max (run core-program (combo/permutations (range 5))))))
 
-(def part2 (println "Omg"))
+(def part2 (println (apply max (run core-program (combo/permutations (range 5 10))))))
 
 (defn -main
   [& args]
