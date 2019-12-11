@@ -7,19 +7,26 @@
 
 (def image-size (* 25 6))
 
-(def layers (partition image-size (digits data-file)))
-
 (defn digits
   [input]
   (map #(Character/digit % 10) input))
 
-(def part1 (println
-            (first
-             (sort-by first
-                      (for [layer (map #(frequencies %) layers)]
-                        {(get layer 0 Integer/MAX_VALUE) (* (get layer 1 Integer/MAX_VALUE) (get layer 2 Integer/MAX_VALUE))})))))
+(def layers (partition image-size (digits data-file)))
 
-(def part2 (println "Omg"))
+(defn merge-layer
+  [a b]
+  (for [i (range 0 image-size)] (min (nth a i 2) (nth b i 2))))
+
+(defn get-color
+  [i]
+  (let [pixel (first (filter #(not= 2 %) (map #(nth % i) layers)))] (if (= 0 pixel) \space \x))
+)
+
+(def decode (map #(string/join %) (partition 25 (map #(get-color %) (range 0 image-size)))))
+
+(def part1 (println (let [minimum (apply min-key #(% 0) (map #(frequencies %) layers))] (* (minimum 1) (minimum 2)))))
+
+(def part2 (doseq [row decode] (println row)))
 
 (defn -main
   [& args]
