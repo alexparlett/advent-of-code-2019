@@ -11,7 +11,7 @@
 
 (defn amp
   [program phase input]
-  (get (run-program program 0 [phase input] nil) :output))
+  (get (run-program program 0 [phase input] nil 0) :output))
 
 (defn run
   [program phase-permutations]

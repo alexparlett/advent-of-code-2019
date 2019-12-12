@@ -8,9 +8,9 @@
 
 (def core-program (vec (map #(Integer/parseInt %) (string/split data-file #","))))
 
-(def part1 (println (get (run-program core-program 0 [1] nil) :output)))
+(def part1 (println (get (run-program core-program 0 [1] nil 0) :output)))
 
-(def part2 (println (get (run-program core-program 0 [5] nil) :output)))
+(def part2 (println (get (run-program core-program 0 [5] nil 0) :output)))
 
 (defn -main
   [& args]
