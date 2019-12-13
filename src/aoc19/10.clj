@@ -2,7 +2,8 @@
   (:gen-class)
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [load-file-as-string]])
-  (:require [clojure.algo.generic.math-functions :as gmf]))
+  (:require [clojure.algo.generic.math-functions :as gmf])
+  (:require [medley.core :as medley]))
 
 (def data-file (load-file-as-string "day10.txt"))
 
@@ -20,17 +21,34 @@
   [start end]
   (Math/toDegrees (gmf/atan2 (- (end :y) (start :y)) (- (end :x) (start :x)))))
 
+(defn get-distance
+  [start end]
+  (Math/hypot (- (end :y) (start :y)) (- (end :x) (start :x))))
+
+(defn get-asteroids-positions
+  [asteroid-map current]
+  (map #(assoc (assoc % :angle (get-angle current %)) :distance (get-distance current %)) (filter #(true? (get % :present)) asteroid-map)))
+
 (defn calculate-visible-asteroids
   [asteroid-map current]
-  (assoc current :visible (count (distinct (map #(get-angle current %) (filter #(true? (get % :present)) asteroid-map))))))
+  (assoc current :visible (count (medley/distinct-by #(get % :angle) (get-asteroids-positions asteroid-map current)))))
 
 (defn find-best-position
   [asteroid-map]
   (apply max-key :visible (for [position asteroid-map] (if (true? (position :present)) (calculate-visible-asteroids asteroid-map position) (assoc position :visible 0)))))
 
-(def part1 (let [asteroid-map (build-asteroid-map data-file)] (println (find-best-position asteroid-map))))
+(defn destroy-asteroids
+  [asteroids monitoring-station]
+  (for [i (range 200)] (nth asteroids i)))
 
-(def part2 (println "Omg"))
+(defn place-monitoring-station
+  [asteroid-map]
+  (let [monitoring-station (find-best-position asteroid-map)]
+    (destroy-asteroids (sort-by :angle (get-asteroids-positions asteroid-map monitoring-station)) monitoring-station)))
+
+(def part1 (println (find-best-position (build-asteroid-map data-file))))
+
+(def part2 (println (nth (place-monitoring-station (build-asteroid-map data-file)) 199)))
 
 (defn -main
   [& args]
