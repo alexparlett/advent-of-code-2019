@@ -2,15 +2,24 @@
   (:gen-class)
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [load-file-as-string]])
-  (:require [aoc19.intcode :refer [run-program]]))
+  (:require [aoc19.intcode :refer [run-program]])
+  (:require [clojure.core.async :refer [>!! <!! <! go-loop]]))
 
-(def data-file (load-file-as-string "day5.txt"))                         ; the url of the resource file
+(def data-file (load-file-as-string "day5.txt"))
 
 (def core-program (vec (map #(Integer/parseInt %) (string/split data-file #","))))
 
-(def part1 (println (get (run-program core-program 0 [1] nil 0) :output)))
+(def part1 (let [[input output] (run-program core-program 0 0)]
+             (do
+               (>!! input 1)
+               (go-loop []
+                 (let [result (<! output)]
+                   (if (number? result)
+                     (do (println result) (recur))
+                     result))))))
 
-(def part2 (println (get (run-program core-program 0 [5] nil 0) :output)))
+(def part2 (let [[input output] (run-program core-program 0 0)]
+             (do (>!! input 5) (println (<!! output)))))
 
 (defn -main
   [& args]

@@ -1,12 +1,15 @@
 (ns aoc19.9
   (:gen-class)
-  (:require [aoc19.intcode :refer [run-program load-program]]))
+  (:require [aoc19.intcode :refer [run-program load-program]])
+  (:require [clojure.core.async :refer [>!! <!!]]))
 
 (def core-program (load-program "day9.txt"))
 
-(def part1 (run-program core-program 0 [1] nil 0))
+(def part1 (println (let [[input output] (run-program core-program 0 0)]
+                      (do (>!! input 1) (<!! output)))))
 
-(def part2 (run-program core-program 0 [2] nil 0))
+(def part2 (println (let [[input output] (run-program core-program 0 0)]
+                      (do (>!! input 2) (<!! output)))))
 
 (defn -main
   [& args]
