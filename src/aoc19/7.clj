@@ -24,10 +24,7 @@
         (>!! c-in (<!! b-out))
         (>!! d-in (<!! c-out))
         (>!! e-in (<!! d-out))
-        (let [result (<!! e-out)]
-          (if (number? result)
-            (recur result initial a-in a-out b-in b-out c-in c-out d-in d-out e-in e-out)
-            initial)))
+        (recur (<!! e-out) initial a-in a-out b-in b-out c-in c-out d-in d-out e-in e-out))
       initial)))
 
 (defn run
