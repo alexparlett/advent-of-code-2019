@@ -1,9 +1,10 @@
 (ns aoc19.11
   (:gen-class)
+  (:require [clojure.pprint :refer [pprint]])
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [replace-value]])
   (:require [aoc19.intcode :refer [run-program load-program]])
-  (:require [clojure.core.async :refer [<!! <!! go-loop put!]]))
+  (:require [clojure.core.async :refer [<!! <!! put!]]))
 
 (def core-program (load-program "day11.txt"))
 
@@ -50,7 +51,7 @@
   [hull]
   (map #(string/replace (string/join %) \0 \space) hull))
 
-(def part1 (clojure.pprint/pprint
+(def part1 (pprint
             (count
              (distinct
               (second
@@ -64,5 +65,5 @@
              (println row)))
 
 (defn -main
-  [& args]
+  []
   (do part1 part2))
