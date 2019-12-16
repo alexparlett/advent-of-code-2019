@@ -16,18 +16,18 @@
     4 \O))
 
 (defn add-tile-to-map
-  [map x y type]
+  [score map x y type]
   (if (and (= -1 x) (= y 0))
-    (do (println type) (print-2d-array map) map)
-    (replace-value y (replace-value x (to-tile type) (nth map y)) map)))
+    [type map]
+    [score(replace-value y (replace-value x (to-tile type) (nth map y)) map)]))
 
 (defn create-game
   [map in out]
-  (go-loop [map map]
+  (go-loop [score 0 map map]
     (let [x (<!! in) y (<!! in) type (<!! in)]
       (if (and (number? x) (number? y) (number? type))
-        (let [nm (add-tile-to-map map x y type)] (do (>!! out nm) (recur nm)))
-        map))))
+        (let [[scr nm] (add-tile-to-map score map x y type)] (do (>!! out [scr map]) (recur scr nm)))
+        [score map]))))
 
 (defn build-map
   [xrange yrange]
@@ -37,15 +37,16 @@
 (def part1 (println
             (frequencies
              (flatten
-              (let [[in out] (run-program core-program 0 0) state (chan (dropping-buffer 1))]
-                (<!! (create-game (build-map 23 42) out state)))))))
+              (second
+               (let [[in out] (run-program core-program 0 0) state (chan (dropping-buffer 1))]
+                 (<!! (create-game (build-map 23 42) out state))))))))
 
 (def part2 (let [[in out] (run-program (replace-value 0 2 core-program) 0 0) state (chan (dropping-buffer 1))]
              (do
                (create-game (build-map 23 42) out state)
                (<!! (go-loop [input (read-line)]
                       (do
-                        (take! state print-2d-array)
+                        (take! state (fn [[score map]] (print-2d-array map)))
                         (case input
                           "x" input
                           "a" (do (>!! in -1) (recur (read-line)))
