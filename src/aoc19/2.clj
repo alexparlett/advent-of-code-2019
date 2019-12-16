@@ -3,7 +3,7 @@
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [load-file-as-string replace-value]])
   (:require [aoc19.intcode :refer [run-program]])
-  (:require [clojure.core.async :as a :refer [>! <! >!! <!!]]))
+  (:require [clojure.core.async :refer [>!! <!!]]))
 
 (def data-file (load-file-as-string "day2.txt"))
 
