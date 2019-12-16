@@ -63,7 +63,10 @@
   [moons]
   (reduce + (map #(calculate-moon-energy %) moons)))
 
-(def part1 (pprint (calculate-total-energy (first (simulate [moon1 moon2 moon3 moon4] 0 (partial until-step-limit 1000))))))
+(def part1 (pprint 
+            (calculate-total-energy 
+             (first 
+              (simulate [moon1 moon2 moon3 moon4] 0 (partial until-step-limit 1000))))))
 
 (def part2 (pprint (let [
                          xf (second (simulate [moon1 moon2 moon3 moon4] 0 (partial until-returned :vx)))

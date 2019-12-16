@@ -4,7 +4,7 @@
   (:require [clojure.string :as string])
   (:require [aoc19.core :refer [replace-value]])
   (:require [aoc19.intcode :refer [run-program load-program]])
-  (:require [clojure.core.async :refer [<!! <!! put!]]))
+  (:require [clojure.core.async :refer [<!! put!]]))
 
 (def core-program (load-program "day11.txt"))
 

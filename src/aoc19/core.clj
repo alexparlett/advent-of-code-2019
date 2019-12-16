@@ -10,3 +10,7 @@
 (defn replace-value
   [index value arr]
   (assoc arr index value))
+
+(defn print-2d-array
+  [arr]
+  (doseq [row arr] (println (string/join row))))

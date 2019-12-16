@@ -110,4 +110,4 @@
 (defn load-program
   [file]
   (let [program (map #(Long/parseLong %) (string/split (load-file-as-string file) #","))]
-    (vec (concat program (repeat (- 2048 (count program)) 0)))))
+    (vec (concat program (repeat (- 4096 (count program)) 0)))))
