@@ -1,6 +1,6 @@
 (ns aoc19.14
   (:gen-class)
-  (:require [aoc19.core :refer [load-file-as-string replace-value update-map]]
+  (:require [aoc19.core :refer [load-file-as-string update-map binary-search]]
             [clojure.string :as string]
             [clojure.pprint :refer [pprint]]
             [com.rpl.specter :as specter]))
@@ -29,57 +29,42 @@
   [processing-chains product]
   (first (filter #(contains? % product) processing-chains)))
 
-(defn has-only-ore
-  [product processing-chains]
-  (let [found (get-product processing-chains product) result (every? #(= % :ORE) (keys (:requires found)))]
-    result))
-
-(defn required-product-for-product
-  [product amount processing-chains required remaining]
-  (let [found (first (filter #(contains? % product) processing-chains))]
-      (let [produces (get found product)
-            mult (Math/ceil (/ amount produces))
-            total-produced (* produces mult)
-            spare (- total-produced amount)
-            needs (get (:requires found) required)]
-        (reset! remaining (assoc @remaining product spare))
-        (println "Remaining " @remaining)
-        (* mult needs))))
+(defn perform-reactions
+  [processing-chains product-key required spare-products]
+  (if (= product-key :ORE)
+    {product-key required}
+    (let [spare-product (get @spare-products product-key 0) required (max (- required spare-product) 0) spare-product-left (max (- spare-product required) 0)]
+      (reset! spare-products (assoc @spare-products product-key spare-product-left))
+      (if (zero? required)
+        {}
+        (let [product (get-product processing-chains product-key)
+              produces (get product product-key)
+              requirements (:requires product)
+              mult (Math/ceil (/ required produces))
+              total-produced (* produces mult)
+              spare (- total-produced required)]
+          (reset! spare-products (update-in @spare-products [product-key] + spare))
+          (update-map requirements (fn [k v] (* mult v))))))))
 
 (defn reduce-requirements
-  [requirements processing-chains remaining]
-  (let [reduced (for [[key val :as requirement] requirements :let [product (first (filter #(contains? % key) processing-chains))]]
-                                      (if (has-only-ore key processing-chains)
-                                        {key val}
-                                        (update-map (:requires product) 
-                                                    (fn [k v] (required-product-for-product key val processing-chains k remaining)))))]
+  [requirements processing-chains spare-product]
+  (let [reduced (for [[product-key required :as requirement] requirements] (perform-reactions processing-chains product-key required spare-product))]
     (apply merge-with + reduced)))
 
-(defn get-requirements
-  [processing-chains products-requiring-ore]
-  (loop [requirements (:requires (get-product processing-chains :FUEL)) remaining (atom {})]
-    (println "Requirements " requirements)
-    (if (every? #(has-only-ore % processing-chains) (keys requirements))
-      [requirements remaining]
-      (recur (reduce-requirements requirements processing-chains remaining) remaining))))
-
-(defn get-products-requiring-ore
-  [processing-chains]
-  (filter #(contains? (:requires %) :ORE) processing-chains))
-
-(defn get-ore-for-requirements
-  [requirements products-requiring-ore]
-  (println requirements)
-  (reduce + (map #(required-product-for-product (key %) (val %) products-requiring-ore :ORE (atom {})) requirements)))
+(defn calculate-ore-for-requirements
+  [processing-chains requirements spare-product]
+  (loop [requirements requirements]
+    (if (every? #(= :ORE %) (keys requirements))
+      requirements
+      (recur (reduce-requirements requirements processing-chains spare-product)))))
 
 (defn calculate-total-ore-required
-  [processing-chains]
-  (let [products-requiring-ore (get-products-requiring-ore processing-chains) [requirements remaining] (get-requirements processing-chains products-requiring-ore)]
-    (println requirements @remaining)
-    (get-ore-for-requirements (update-map requirements (fn [k v] (- v (get @remaining k 0)))) processing-chains)))
+  [processing-chains fuel-requirements]
+  (:ORE (calculate-ore-for-requirements processing-chains {:FUEL fuel-requirements} (atom {}))))
 
-(def part1 (pprint (calculate-total-ore-required (load-processing-chains))))
-(def part2 (println "Omg"))
+(def part1 (pprint (calculate-total-ore-required (load-processing-chains) 1)))
+
+(def part2 (pprint (binary-search  (partial calculate-total-ore-required (load-processing-chains)) 1000000000000 0 1000000000000)))
 
 (defn -main
   []
