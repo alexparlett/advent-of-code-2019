@@ -11,6 +11,6 @@
   [index value arr]
   (assoc arr index value))
 
-(defn print-2d-array
-  [arr]
-  (doseq [row arr] (println (string/join row))))
+(defn update-map [m f]
+  (reduce-kv (fn [m k v]
+               (assoc m k (f k v))) {} m))

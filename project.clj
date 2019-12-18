@@ -8,7 +8,7 @@
                  [org.clojure/algo.generic "0.1.3"]
                  [org.clojure/core.async "0.6.532"]
                  [medley "1.1.0"]
-                 [zaffre "0.4.0-SNAPSHOT"]]
+                 [com.rpl/specter "1.1.3"]]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :jvm-opts ["-XstartOnFirstThread"])
