@@ -31,3 +31,17 @@
                   (< res goal) (recur (inc mid) high latest-res')
                   (> res goal) (recur low (dec mid) probes)
                   :else {:res mid})))))))
+
+
+(defn build-2d-array
+  [xrange yrange initial-value & [mid-point-value]]
+  (vec (for [y (range yrange)]
+         (vec (for [x (range xrange)]
+                (if (and (= (Math/floor (/ xrange 2)) x) 
+                         (= (Math/floor (/ yrange 2)) y) )
+                         mid-point-value 
+                         initial-value))))))
+
+(defn print-2d-array
+  [arr]
+  (doseq [row arr] (println (string/join row))))

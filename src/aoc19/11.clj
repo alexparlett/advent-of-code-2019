@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [clojure.pprint :refer [pprint]])
   (:require [clojure.string :as string])
-  (:require [aoc19.core :refer [replace-value]])
+  (:require [aoc19.core :refer [replace-value build-2d-array]])
   (:require [aoc19.intcode :refer [run-program load-program]])
   (:require [clojure.core.async :refer [<!! put!]]))
 
@@ -41,12 +41,6 @@
         (recur input output nh nx ny nd np))
       [hull painted])))
 
-(defn build-hull
-  [xrange yrange initial-panel-color]
-  (vec (for [y (range yrange)]
-         (vec (for [x (range xrange)]
-                (if (and (= 63 x) (= 63 y)) initial-panel-color 0))))))
-
 (defn build-identifier
   [hull]
   (map #(string/replace (string/join %) \0 \space) hull))
@@ -56,12 +50,12 @@
              (distinct
               (second
                (let [[input output] (run-program core-program 0 0)]
-                 (paint-hull input output (build-hull 128 128 0) 63 63 [1 0] [])))))))
+                 (paint-hull input output (build-2d-array 128 128 0) 63 63 [1 0] [])))))))
 
 (def part2 (doseq [row (build-identifier
                         (first
                          (let [[input output] (run-program core-program 0 0)]
-                           (paint-hull input output (build-hull 128 128 1) 63 63 [1 0] []))))]
+                           (paint-hull input output (build-2d-array 128 128 0 1) 63 63 [1 0] []))))]
              (println row)))
 
 (defn -main
