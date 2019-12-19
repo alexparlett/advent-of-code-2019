@@ -45,3 +45,6 @@
 (defn print-2d-array
   [arr]
   (doseq [row arr] (println (string/join row))))
+
+(defn lazy-contains? [coll val]
+  (some #(= val %) coll))
