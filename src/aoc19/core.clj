@@ -11,6 +11,10 @@
   [index value arr]
   (assoc arr index value))
 
+(defn replace-value-2d
+  [x y value arr]
+  (replace-value y (replace-value x value (nth arr y)) arr))
+
 (defn update-map [m f]
   (reduce-kv (fn [m k v]
                (assoc m k (f k v))) {} m))
