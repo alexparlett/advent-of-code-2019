@@ -16,10 +16,10 @@
 (defn find-input-for-output
   [program target]
   (for [i (range 99) j (range 99)
-        :when (let [[input output] (run-program (restore-program program i j) 0 0)] (= target (first (get (<!! output) :program))))]
+        :when (let [[input output] (run-program (restore-program program i j))] (= target (first (get (<!! output) :program))))]
     (+ (* 100 i) j)))
 
-(def part1 (let [[input output] (run-program (restore-program core-program 12 2) 0 0)]
+(def part1 (let [[input output state] (run-program (restore-program core-program 12 2))]
              (first (get (<!! output) :program))))
 
 (def part2 (last (find-input-for-output core-program 19690720)))

@@ -49,12 +49,12 @@
             (count
              (distinct
               (second
-               (let [[input output] (run-program core-program 0 0)]
+               (let [[input output] (run-program core-program)]
                  (paint-hull input output (build-2d-array 128 128 0) 63 63 [1 0] [])))))))
 
 (def part2 (doseq [row (build-identifier
                         (first
-                         (let [[input output] (run-program core-program 0 0)]
+                         (let [[input output] (run-program core-program)]
                            (paint-hull input output (build-2d-array 128 128 0 1) 63 63 [1 0] []))))]
              (println row)))
 

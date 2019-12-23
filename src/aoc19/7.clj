@@ -12,7 +12,7 @@
 
 (defn amp
   [program phase name]
-  (let [[input output] (run-program program 0 0 name)]
+  (let [[input output] (run-program program)]
     (do (>!! input phase) [input output])))
 
 (defn feedback

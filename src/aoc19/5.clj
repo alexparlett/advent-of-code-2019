@@ -9,7 +9,7 @@
 
 (def core-program (vec (map #(Integer/parseInt %) (string/split data-file #","))))
 
-(def part1 (let [[input output] (run-program core-program 0 0)]
+(def part1 (let [[input output] (run-program core-program)]
              (do
                (>!! input 1)
                (go-loop []
@@ -18,7 +18,7 @@
                      (do (println result) (recur))
                      result))))))
 
-(def part2 (let [[input output] (run-program core-program 0 0)]
+(def part2 (let [[input output] (run-program core-program)]
              (do (>!! input 5) (println (<!! output)))))
 
 (defn -main

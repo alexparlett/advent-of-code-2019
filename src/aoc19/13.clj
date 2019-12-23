@@ -14,7 +14,7 @@
     (> paddle ball) (put! pin -1)
     (< paddle ball) (put! pin 1)))
 
-(def part1  (let [[pin pout] (run-program core-program 0 0) total (atom 0)]
+(def part1  (let [[pin pout] (run-program core-program) total (atom 0)]
               (<!! (go-loop []
                      (let [x (<!! pout) y (<!! pout) type (<!! pout)]
                        (if (and (number? x) (number? y) (number? type))
@@ -23,7 +23,7 @@
                            (recur))))))
               (println @total)))
 
-(def part2  (let [[pin pout] (run-program (replace-value 0 2 core-program) 0 0) score (atom 0) ball (atom 0) paddle (atom 0)]
+(def part2  (let [[pin pout] (run-program (replace-value 0 2 core-program)) score (atom 0) ball (atom 0) paddle (atom 0)]
               (<!! (go-loop []
                      (let [x (<!! pout) y (<!! pout) type (<!! pout)]
                        (if (and (number? x) (number? y) (number? type))

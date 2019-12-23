@@ -5,10 +5,10 @@
 
 (def core-program (load-program "day9.txt"))
 
-(def part1 (println (let [[input output] (run-program core-program 0 0)]
+(def part1 (println (let [[input output] (run-program core-program)]
                       (do (>!! input 1) (<!! output)))))
 
-(def part2 (println (let [[input output] (run-program core-program 0 0)]
+(def part2 (println (let [[input output] (run-program core-program)]
                       (do (>!! input 2) (<!! output)))))
 
 (defn -main
