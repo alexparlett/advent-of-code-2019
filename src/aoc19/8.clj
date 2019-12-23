@@ -1,15 +1,11 @@
 (ns aoc19.8
   (:gen-class)
   (:require [clojure.string :as string])
-  (:require [aoc19.core :refer [load-file-as-string]]))
+  (:require [aoc19.core :refer [load-file-as-string digits]]))
 
 (def data-file (load-file-as-string "day8.txt"))
 
 (def image-size (* 25 6))
-
-(defn digits
-  [input]
-  (map #(Character/digit % 10) input))
 
 (def layers (partition image-size (digits data-file)))
 

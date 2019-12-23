@@ -52,3 +52,7 @@
 
 (defn lazy-contains? [coll val]
   (some #(= val %) coll))
+
+(defn digits
+  [input]
+  (map #(Character/digit % 10) input))
