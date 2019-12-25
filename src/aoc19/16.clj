@@ -4,47 +4,36 @@
 
 (def data-file (load-file-as-string "day16.txt"))
 
-(def pattern [0 1 0 -1])
+(defn create-pattern
+  [iteration]
+  (rest (cycle (mapcat #(repeat (inc iteration) %) [0 1 0 -1]))))
 
-(defn fft-mul
-  [iteration length]
-  (let [multiplied-pattern (mapcat (partial repeat iteration) pattern)
-        repeated-pattern (rest (take (inc length) (cycle multiplied-pattern)))]
-    repeated-pattern))
+(def patterns
+  (map create-pattern (range)))
 
-(defn map-input-value
-  [input fft length]
-  (let [new-val (reduce + (for [i (range length)
-                                :let [val (nth input i) mul (nth fft i)]]
-                            (* val mul)))
-        string-val (str new-val)
-        start (max (- (.length string-val) 1) 0)
-        last (subs string-val start)
-        result (Integer/parseInt last)]
-    result))
+(defn apply-pattern
+  [signal pattern]
+  (Math/abs (rem (reduce + (apply map * (list signal pattern))) 10)))
 
-(defn fft-phase
-  [input length phase]
-  (let [iteration (for [index (range length) :let [fft (fft-mul (inc index) length)]]
-                    (map-input-value input fft length))]
-    iteration))
+(defn calculate-phase
+  [signal]
+  (take (count signal) (map (partial apply-pattern signal) patterns)))
 
-(defn build-fft
-  [input length max-phases]
-  (loop [input input phase 0]
-    (if (= phase max-phases)
-      input
-      (recur (fft-phase input length phase) (inc phase)))))
+(def signal-offset (Integer/parseInt (subs data-file 0 7)))
 
-(def part1 (let [input (digits data-file) length (count input)]
-             (println (take 8 (build-fft input length 100)))))
+(defn partial-sum
+  [signal]
+  (reductions (fn [last current] (mod (+ current last) 10)) signal))
 
-(def part2 (let [input (digits data-file) 
-                 message (flatten (repeat 10000 input)) 
-                 offset (Integer/parseInt (apply str (take 7 input))) 
-                 length (count message)
-                 decoded (build-fft message length 100)]
-             (println (take 8 (drop offset decoded)))))
+(defn transform
+  [signal]
+  (vec (reverse (nth (iterate partial-sum (reverse signal)) 100))))
+
+(def part1 (let [signal (digits data-file)]
+             (println (take 8 (nth (iterate calculate-phase signal) 100)))))
+
+(def part2 (let [signal (flatten (repeat 10000 (digits data-file)))]
+             (println (subvec (transform signal) signal-offset (+ signal-offset 8)))))
 
 (defn -main
   [& args]
