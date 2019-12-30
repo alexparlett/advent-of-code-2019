@@ -15,6 +15,12 @@
   [x y value arr]
   (replace-value y (replace-value x value (nth arr y)) arr))
 
+(defn get-value-2d
+  ([[x y] arr]
+   (nth (nth arr y) x))
+  ([[x y] arr not-found]
+   (nth (nth arr y not-found) x not-found)))
+
 (defn update-map [m f]
   (reduce-kv (fn [m k v]
                (assoc m k (f k v))) {} m))
